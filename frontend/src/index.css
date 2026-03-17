@@ -1,13 +1,59 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --green: #22c55e;
+    --green-dark: #16a34a;
+    --green-light: #dcfce7;
+    --green-mid: #86efac;
+    --sidebar: #0f172a;
+    --bg: #f0fdf4;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --border: #e2e8f0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-display;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer components {
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  /* Page enter animation */
+  .page-enter {
+    animation: fadeSlideIn 0.22s ease both;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Auth blob */
+  .auth-blob {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(34,197,94,.12);
+    filter: blur(60px);
+    pointer-events: none;
+  }
 }
