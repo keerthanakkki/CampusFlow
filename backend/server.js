@@ -61,7 +61,7 @@ app.post("/task", async (req, res) => {
       data: parsed,
     });
   } catch (error) {
-    console.error(error.message);
+    console.error("FULL ERROR:", error.response?.data || error.message);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
