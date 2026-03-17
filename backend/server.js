@@ -8,22 +8,65 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test route
+// 🔹 Test route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
-// Dummy route (for now)
-app.post("/task", (req, res) => {
-  const { text, phone } = req.body;
+// 🔥 AI FUNCTION
+async function parseTask(text) {
+  const response = await axios.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      model: "mistralai/mistral-7b-instruct",
+      messages: [
+        {
+          role: "system",
+          content:
+            'Extract task, date (YYYY-MM-DD), and time (HH:MM) from the sentence. Return ONLY JSON like {"task":"","date":"","time":""}',
+        },
+        {
+          role: "user",
+          content: text,
+        },
+      ],
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:3000",
+        "X-Title": "CampusFlow",
+      },
+    },
+  );
 
-  console.log("Received:", text, phone);
+  const content = response.data.choices[0].message.content;
+  const cleaned = content.replace(/```json|```/g, "").trim();
 
-  res.json({
-    message: "Task received successfully",
-  });
+  return JSON.parse(cleaned);
+}
+
+// 🚀 MAIN API
+app.post("/task", async (req, res) => {
+  try {
+    const { text, phone } = req.body;
+
+    const parsed = await parseTask(text);
+
+    console.log("AI Output:", parsed);
+
+    res.json({
+      message: "AI parsed successfully",
+      data: parsed,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Something went wrong" });
+  }
 });
 
+// 🔹 START SERVER
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
