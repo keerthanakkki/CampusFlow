@@ -62,7 +62,10 @@ app.post("/task", async (req, res) => {
     });
   } catch (error) {
     console.error("FULL ERROR:", error.response?.data || error.message);
-    res.status(500).json({ error: "Something went wrong" });
+
+    res.status(500).json({
+      error: error.response?.data || error.message,
+    });
   }
 });
 
